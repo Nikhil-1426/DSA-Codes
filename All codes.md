@@ -2696,4 +2696,91 @@ int main()
 
   return 0;
 }
+
+
+
+// Hash Map
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TABLE_SIZE 10
+
+// Node structure for chaining
+typedef struct Node {
+    char key[50];
+    int value;
+    struct Node* next;
+} Node;
+
+// Hash table structure
+Node* hashTable[TABLE_SIZE];
+
+// Hash function
+int hashFunction(char* key) {
+    int hash = 0;
+    while (*key) {
+        hash += *key;
+        key++;
+    }
+    return hash % TABLE_SIZE;
+}
+
+// Insert key-value pair
+void insert(char* key, int value) {
+    int index = hashFunction(key);
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    strcpy(newNode->key, key);
+    newNode->value = value;
+    newNode->next = hashTable[index];
+    hashTable[index] = newNode;
+}
+
+// Search for a key
+int search(char* key) {
+    int index = hashFunction(key);
+    Node* temp = hashTable[index];
+    while (temp) {
+        if (strcmp(temp->key, key) == 0) {
+            return temp->value;
+        }
+        temp = temp->next;
+    }
+    return -1; // Key not found
+}
+
+// Display the hashmap
+void display() {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        printf("Bucket %d: ", i);
+        Node* temp = hashTable[i];
+        while (temp) {
+            printf("(%s, %d) -> ", temp->key, temp->value);
+            temp = temp->next;
+        }
+        printf("NULL\n");
+    }
+}
+
+int main() {
+    // Initialize hash table
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        hashTable[i] = NULL;
+    }
+
+    insert("Alice", 20);
+    insert("Bob", 25);
+    insert("Charlie", 30);
+    insert("Alice", 22); // Handles collision (same key)
+
+    printf("Searching for Bob: %d\n", search("Bob"));
+    printf("Searching for Alice: %d\n", search("Alice"));
+    printf("Searching for Eve: %d\n", search("Eve"));
+
+    display();
+
+    return 0;
+}
+
 ```
